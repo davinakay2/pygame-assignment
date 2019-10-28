@@ -1,0 +1,242 @@
+Because Friday is a make-up class for the last online session, we will substitute the pygame session with online assignment.
+
+Kindly upload the task in your github and due before Monday next session.
+
+You can do it in groups of 2 people. Don’t forget to also attach your groupmate name
+
+
+PYGAME ASSIGNMENT ONLINE
+
+1. What is pygame? Can you modify its source code?
+= pygame (the library) is a Free and Open Source python programming language library for making multimedia applications like games built on top of the excellent SDL library.
+= yes, you can modify its source code.
+
+2. What is Rectangle? How do you create a rectangle? (give sample code)
+= an object in pygame(pygame.rect) for storing rectangular coordinates
+= sample code :
+import pygame, sys
+def main():
+    pygame.init()
+    DISPLAY=pygame.display.set_mode((500,400),0,32)
+    WHITE=(255,255,255)
+    BLUE=(0,0,255)
+    DISPLAY.fill(WHITE)
+    pygame.draw.rect(DISPLAY,BLUE,(200,150,100,50))
+    while True:
+        for event in pygame.event.get():
+            if event.type==QUIT:
+                pygame.quit()
+                sys.exit()
+        pygame.display.update()
+main()
+This creates a simple window 500 pixels by 400 pixels that is white. Within the window will be a blue rectangle. You need to use the pygame.draw.rect to go about this, and you add the DISPLAY constant to add it to the screen, the variable blue to make it blue (blue is a tuple that values which equate to blue in the RGB values and it's coordinates.
+
+3. Can you play music with pygame? (give sample code)
+yes, you can play music with pygame.
+= sample code :
+import pygame
+file = 'some.mp3'
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load(file)
+pygame.mixer.music.play()
+pygame.event.wait()
+
+4. A lot of games involve timer in its gameplay. How do you create a timer from round start to round finish? (give sample code)
+= 
+Sample code:
+start_ticks=pygame.time.get_ticks() #starter tick
+while mainloop: # mainloop
+    seconds=(pygame.time.get_ticks()-start_ticks)/1000 #calculate how many seconds
+    if seconds>10: # if more than 10 seconds end game
+        break
+    print (seconds) #print how many seconds
+
+5. What is sprite and groups? When do you use it? (give sample code)
+= A Sprite is a two dimensional image that is part of a larger graphical scene. It is typically an object in the game that players can interact with. 
+Groups are used to store sprites, being designed for high efficiency in removing and adding sprites to them. 
+
+6. What is collision detection? Why is it important? (give sample code)
+= Collision detection involves figuring out when two things on the screen have touched (that is, collided with) each other. Collision detection is really useful for games. it is important because Collision detection can help determine whether the game character is standing on solid ground or there’s nothing but empty air beneath them.
+= sample code :
+import pygame
+import sys
+
+class Sprite(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([20, 20])
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect()
+
+        self.rect.center = pos
+
+def main():
+    pygame.init()
+    clock = pygame.time.Clock()
+    fps = 50
+    bg = [255, 255, 255]
+    size =[200, 200]
+
+
+    screen = pygame.display.set_mode(size)
+
+    player = Sprite([40, 50])
+    player.move = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
+    player.vx = 5
+    player.vy = 5
+
+
+    wall = Sprite([100, 60])
+
+    wall_group = pygame.sprite.Group()
+    wall_group.add(wall)
+
+    player_group = pygame.sprite.Group()
+    player_group.add(player)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+
+        key = pygame.key.get_pressed()
+
+        for i in range(2):
+            if key[player.move[i]]:
+                player.rect.x += player.vx * [-1, 1][i]
+
+        for i in range(2):
+            if key[player.move[2:4][i]]:
+                player.rect.y += player.vy * [-1, 1][i]
+
+        screen.fill(bg)
+
+        # first parameter takes a single sprite
+        # second parameter takes sprite groups
+        # third parameter is a do kill command if true
+        # all group objects colliding with the first parameter object will be
+        # destroyed. The first parameter could be bullets and the second one
+        # targets although the bullet is not destroyed but can be done with
+        # simple trick bellow
+        hit = pygame.sprite.spritecollide(player, wall_group, True)
+
+        if hit:
+            # if collision is detected call a function in your case destroy
+            # bullet
+            player.image.fill((255, 255, 255))
+
+        player_group.draw(screen)
+        wall_group.draw(screen)
+
+        pygame.display.update()
+        clock.tick(fps)
+
+    pygame.quit()
+    sys.exit
+
+if __name__ == '__main__':
+    main()
+7. How do you display image in pygame? What is the function of blit? (give sample code)
+= blitting is drawing. Blit function :
+- Create a canvas of a desired size
+This is our window, created by screen = pygame.display.set_mode((width,height)). Where screen is the canvas name. Eventually everything will need to be drawn onto this canvas so that we can see it.
+
+- Create a surface of smaller size containing the object to be displayed
+This is a surface that we will populate with objects such as images. It does not need to be smaller than the window size and it can be moved around freely.
+
+- Define a Rect value of the surface
+When you create a surface using something like background = pygame.Surface((width,height)) you specify it's size. The images or drawn items on the surface can be any shape or size but they must all be contained within the bounds set by this width and height.
+
+- Blit (overlap) the surface on the canvas at the rect position
+Now the all important bit. We need to get this surface (background) and draw it onto the window. To do this we will call screen.blit(background,(x,y)) where (x,y) is the position inside the window where we want the top left of the surface to be. This function says take the background surface and draw it onto the screen and position it at (x,y).
+= sample code :
+import pygame
+
+pygame.init()
+
+#### Create a canvas on which to display everything ####
+window = (400,400)
+screen = pygame.display.set_mode(window)
+#### Create a canvas on which to display everything ####
+
+#### Create a surface with the same size as the window ####
+background = pygame.Surface(window)
+#### Create a surface with the same size as the window ####
+
+#### Populate the surface with objects to be displayed ####
+pygame.draw.rect(background,(0,255,255),(20,20,40,40))
+pygame.draw.rect(background,(255,0,255),(120,120,50,50))
+#### Populate the surface with objects to be displayed ####
+
+#### Blit the surface onto the canvas ####
+screen.blit(background,(0,0))
+#### Blit the surface onto the canvas ####
+
+#### Update the the display and wait ####
+pygame.display.flip()
+done = False
+while not done:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+#### Update the the display and wait ####
+
+pygame.quit()
+
+10. What is game physics? Why is it important?
+= game physics involves the introduction of the laws of physics into a simulation or game engine, particularly in 3D computer graphics. 
+= it is important because for the purpose of making the effects appear more realistic to the observer.
+
+11. How do you display text in pygame? (give sample code)
+= sample code :
+import pygame
+import pygame.freetype  # Import the freetype module.
+
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+GAME_FONT = pygame.freetype.Font("your_font.ttf", 24)
+running =  True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    screen.fill((255,255,255))
+    # You can use `render` and then blit the text surface ...
+    text_surface, rect = GAME_FONT.render("Hello World!", (0, 0, 0))
+    screen.blit(text_surface, (40, 250))
+    # or just `render_to` the target surface.
+    GAME_FONT.render_to(screen, (40, 350), "Hello World!", (0, 0, 0))
+
+    pygame.display.flip()
+
+pygame.quit()
+12. How do you move a sprite / image in pygame? (give sample code)
+
+= Use update() function and define its update rules. 
+
+Sample code:
+def update(self):
+    # Move the block down one pixel
+    self.rect.y += 1
+    if self.rect.y > screen_height:
+        self.rect.y = random.randrange(-100, -10)
+        self.rect.x = random.randrange(0, screen_width)
+
+
+13. How do you fill a color of a surface? (give sample code)
+use Surface.fill(color)
+Sample code:
+surface = Surface((width,height))
+surface.fill((255,255,255))
+
+14. You have a player sprite. How do you randomize its position in a screen? (give sample code)
+import random
+x = random.randint(0,screen width)
+y = random.randint(0,screen height)
+
+15. Did you notice there are no number 9? (Y/N)
+= Y
